@@ -359,21 +359,27 @@ R2 = 1 - SSE/SST;</code></pre>
             <div class="note-box">
               <h3>5.10 Confidence and prediction intervals</h3>
               <p>
-                After fitting the regression line, the uncertainty of the estimate should be quantified. Two
-                common intervals are used:
+                After fitting the regression line, engineers should quantify the uncertainty of the estimate. Two
+                common procedures are confidence intervals and prediction intervals.
               </p>
               <ul class="checklist">
-                <li><strong>Confidence interval</strong> for the mean response at x = x₀</li>
-                <li><strong>Prediction interval</strong> for an individual new observation at x = x₀</li>
+                <li><strong>Confidence interval</strong> for the mean response at a given x-value</li>
+                <li><strong>Prediction interval</strong> for an individual future observation at a given x-value</li>
               </ul>
               <div class="formula-card">
                 <p><strong>Predicted value:</strong> ŷ₀ = a + bx₀</p>
-                <p><strong>Mean response interval:</strong> ŷ₀ ± t<sub>α/2,n-2</sub> s√(1/n + (x₀ - x̄)²/Sₓₓ)</p>
-                <p><strong>Prediction interval:</strong> ŷ₀ ± t<sub>α/2,n-2</sub> s√(1 + 1/n + (x₀ - x̄)²/Sₓₓ)</p>
+                <p><strong>Confidence interval:</strong> ŷ₀ ± t<sub>α/2, n-2</sub> s√(1/n + (x₀ - x̄)²/Sₓₓ)</p>
+                <p><strong>Prediction interval:</strong> ŷ₀ ± t<sub>α/2, n-2</sub> s√(1 + 1/n + (x₀ - x̄)²/Sₓₓ)</p>
               </div>
               <p>
-                The prediction interval is always wider than the confidence interval because it accounts for both
-                parameter uncertainty and variation in individual observations.
+                These intervals assume an appropriate linear model with independent, normally distributed errors
+                and constant error variance. Five observations are insufficient to assess these assumptions
+                confidently. A 95% confidence procedure has 95% long-run coverage; it does not assign 95%
+                probability to a fixed parameter after the data have been observed.
+              </p>
+              <p>
+                In practice, the prediction interval is wider than the confidence interval because it includes both
+                parameter uncertainty and the random variability of individual observations.
               </p>
               <pre class="code-block compact"><code>x0 = 35;
 Sxx = sum((x - mean(x)).^2);
@@ -383,7 +389,10 @@ SE_mean = s * sqrt(1/length(x) + (x0-mean(x))^2/Sxx);
 SE_pred = s * sqrt(1 + 1/length(x) + (x0-mean(x))^2/Sxx);
 tcrit = tinv(0.975, length(x)-2);
 CI = [yp - tcrit*SE_mean, yp + tcrit*SE_mean];
-PI = [yp - tcrit*SE_pred, yp + tcrit*SE_pred];</code></pre>
+PI = [yp - tcrit*SE_pred, yp + tcrit*SE_pred];
+figure; plot(x,y,'o'); hold on; plot(x,yp,'r-');
+plot([x0 x0],[CI(1) CI(2)],'k--');
+plot([x0 x0],[PI(1) PI(2)],'b--'); grid on;</code></pre>
             </div>
           </div>
         </div>
@@ -397,50 +406,60 @@ PI = [yp - tcrit*SE_pred, yp + tcrit*SE_pred];</code></pre>
           </div>
 
           <p>
-            Students are asked to fit the empirical model <strong>δ = a + bF</strong> using the measured
-            load-deflection data and complete the tasks below.
+            A structural engineer measures the following hypothetical applied loads and vertical deflections. Fit the
+            empirical model <strong>δ = a + bF</strong> within the measured range.
           </p>
 
           <div class="content-grid">
             <div>
-              <h3>Problem statement</h3>
-              <p>
-                A test specimen is loaded in increments, and the corresponding deflection is measured. The
-                purpose is to determine the straight-line relationship between load and deflection and evaluate
-                the reliability of the fitted model.
-              </p>
-
+              <h3>Data</h3>
               <table class="data-table">
                 <thead>
-                  <tr><th>Load F (kN)</th><th>Deflection δ (mm)</th></tr>
+                  <tr><th>Observation</th><th>Load F (kN)</th><th>Deflection δ (mm)</th></tr>
                 </thead>
                 <tbody>
-                  <tr><td>1</td><td>2.1</td></tr>
-                  <tr><td>2</td><td>3.4</td></tr>
-                  <tr><td>3</td><td>5.0</td></tr>
-                  <tr><td>4</td><td>6.8</td></tr>
-                  <tr><td>5</td><td>8.2</td></tr>
-                  <tr><td>6</td><td>9.7</td></tr>
+                  <tr><td>1</td><td>2</td><td>0.8</td></tr>
+                  <tr><td>2</td><td>4</td><td>1.7</td></tr>
+                  <tr><td>3</td><td>6</td><td>2.5</td></tr>
+                  <tr><td>4</td><td>8</td><td>3.4</td></tr>
+                  <tr><td>5</td><td>10</td><td>4.1</td></tr>
+                  <tr><td>6</td><td>12</td><td>5.1</td></tr>
                 </tbody>
               </table>
             </div>
 
             <div>
-              <h3>Tasks</h3>
-              <ul class="checklist">
-                <li>Draw a scatter plot of deflection versus load</li>
-                <li>Derive the normal equations for the linear model</li>
-                <li>Find the coefficients a and b using matrix solution</li>
-                <li>Check the result using <code>polyfit</code> and <code>polyval</code></li>
-                <li>Compute SSE, RMSE, and R²</li>
-                <li>Plot residuals and discuss their pattern</li>
-                <li>Estimate the predicted deflection at 7 and 15 kN</li>
-                <li>Compute 95% confidence intervals and prediction intervals</li>
-                <li>Interpret the engineering meaning of the fitted model</li>
-                <li>State the limitations of the linear assumption</li>
-              </ul>
+              <h3>Required tasks</h3>
+              <ol class="checklist ordered">
+                <li>Scatter plot</li>
+                <li>Manual normal-equation derivation</li>
+                <li>Matrix solution</li>
+                <li>polyfit/polyval</li>
+                <li>myLinearFit function</li>
+                <li>SSE, RMSE and R²</li>
+                <li>Residual plot</li>
+                <li>Predict at 7 and 15 kN and identify interpolation/extrapolation</li>
+                <li>95% confidence and prediction intervals</li>
+                <li>Interpret limitations of the model</li>
+              </ol>
             </div>
           </div>
+
+          <h3>Assessment component</h3>
+          <table class="data-table">
+            <thead>
+              <tr><th>Assessment component</th><th>Weight</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Manual derivation</td><td>15%</td></tr>
+              <tr><td>Matrix calculations</td><td>15%</td></tr>
+              <tr><td>Built-in fitting and plotting</td><td>15%</td></tr>
+              <tr><td>User-defined function</td><td>15%</td></tr>
+              <tr><td>Model evaluation</td><td>15%</td></tr>
+              <tr><td>Intervals</td><td>15%</td></tr>
+              <tr><td>Engineering interpretation</td><td>10%</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
     </main>
