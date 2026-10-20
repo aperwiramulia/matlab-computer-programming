@@ -268,30 +268,179 @@ R2 = 1 - SSE/SST;</code></pre>
         </div>
       </section>
 
-      <section id="assignment" class="section">
+      <section id="chapter5" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Chapter 5</p>
+            <h2>Linear best fitting and regression analysis</h2>
+          </div>
+
+          <div class="content-grid">
+            <div>
+              <h3>5.1 Linear regression model</h3>
+              <p>
+                A simple linear regression model is written as <strong>y = a + bx</strong>, where
+                <strong>a</strong> is the intercept and <strong>b</strong> is the slope of the best-fit line.
+                This form is used when the relationship between two variables is approximately linear.
+              </p>
+
+              <h3>5.2 Data arrangement and plotting</h3>
+              <p>
+                The first step is to organize the measured data in pairs of independent and dependent
+                variables, then plot them as a scatter diagram. The scatter plot helps confirm whether
+                the relation is linear before conducting regression.
+              </p>
+
+              <h3>5.3 Least-squares method</h3>
+              <p>
+                The least-squares method determines the coefficients that minimize the sum of squared
+                residuals. This gives the best-fit line closest to all data points in the sense of
+                minimum total squared error.
+              </p>
+              <div class="formula-card">
+                <p><strong>Residual:</strong> e = y - ŷ</p>
+                <p><strong>Least-squares objective:</strong> minimize Σ(y - (a + bx))²</p>
+              </div>
+
+              <h3>5.4 Normal equations</h3>
+              <p>
+                The coefficients are obtained from the normal equations. For the model y = a + bx,
+                the system is:
+              </p>
+              <div class="formula-card">
+                <p><strong>na + (Σx)b = Σy</strong></p>
+                <p><strong>(Σx)a + (Σx²)b = Σxy</strong></p>
+              </div>
+
+              <h3>5.5 MATLAB implementation</h3>
+              <pre class="code-block"><code>x = [10 20 30 40 50];
+y = [4 7 11 14 18];
+X = [ones(length(x),1), x];
+c = X\y;
+a = c(1); b = c(2);
+yhat = a + b*x;
+plot(x,y,'o',x,yhat,'-'); grid on;</code></pre>
+
+              <h3>5.6 Model quality measures</h3>
+              <p>
+                Several measures are used to evaluate the fit: residuals, standard error, RMSE, and
+                coefficient of determination R². These indicators show whether the model explains the
+                observed variation well and whether the residuals are small and randomly distributed.
+              </p>
+              <pre class="code-block compact"><code>e = y - yhat;
+SSE = sum(e.^2);
+RMSE = sqrt(mean(e.^2));
+SST = sum((y - mean(y)).^2);
+R2 = 1 - SSE/SST;</code></pre>
+
+              <h3>5.7 Interpolation and extrapolation</h3>
+              <p>
+                Interpolation uses the fitted model within the observed x-range. Extrapolation extends the
+                relationship beyond the available data and is riskier because the model may not remain valid.
+                It is important to check whether the engineering relationship remains physically reasonable.
+              </p>
+
+              <h3>5.8 Interpretation of slope and intercept</h3>
+              <p>
+                The slope <strong>b</strong> gives the average change in the response for each unit increase in
+                the predictor, while the intercept <strong>a</strong> is the estimated response when x = 0.
+                In engineering applications, these values must be interpreted in relation to the actual problem,
+                not only as algebraic coefficients.
+              </p>
+
+              <h3>5.9 Limitations of regression</h3>
+              <p>
+                A linear model is only valid if the relation is approximately linear and the residuals do not
+                show a strong systematic pattern. If the data are nonlinear, contain outliers, or are influenced
+                by measurement errors, then a simple straight-line fit may be misleading.
+              </p>
+            </div>
+
+            <div class="note-box">
+              <h3>5.10 Confidence and prediction intervals</h3>
+              <p>
+                After fitting the regression line, the uncertainty of the estimate should be quantified. Two
+                common intervals are used:
+              </p>
+              <ul class="checklist">
+                <li><strong>Confidence interval</strong> for the mean response at x = x₀</li>
+                <li><strong>Prediction interval</strong> for an individual new observation at x = x₀</li>
+              </ul>
+              <div class="formula-card">
+                <p><strong>Predicted value:</strong> ŷ₀ = a + bx₀</p>
+                <p><strong>Mean response interval:</strong> ŷ₀ ± t<sub>α/2,n-2</sub> s√(1/n + (x₀ - x̄)²/Sₓₓ)</p>
+                <p><strong>Prediction interval:</strong> ŷ₀ ± t<sub>α/2,n-2</sub> s√(1 + 1/n + (x₀ - x̄)²/Sₓₓ)</p>
+              </div>
+              <p>
+                The prediction interval is always wider than the confidence interval because it accounts for both
+                parameter uncertainty and variation in individual observations.
+              </p>
+              <pre class="code-block compact"><code>x0 = 35;
+Sxx = sum((x - mean(x)).^2);
+s = sqrt(SSE/(length(x)-2));
+yp = a + b*x0;
+SE_mean = s * sqrt(1/length(x) + (x0-mean(x))^2/Sxx);
+SE_pred = s * sqrt(1 + 1/length(x) + (x0-mean(x))^2/Sxx);
+tcrit = tinv(0.975, length(x)-2);
+CI = [yp - tcrit*SE_mean, yp + tcrit*SE_mean];
+PI = [yp - tcrit*SE_pred, yp + tcrit*SE_pred];</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="assignment" class="section alt">
         <div class="container">
           <div class="section-heading">
             <p class="eyebrow">Assessment</p>
-            <h2>Student assignment: load and deflection</h2>
+            <h2>5.11 Student assignment: load and deflection</h2>
           </div>
 
           <p>
-            Students are asked to fit the empirical model <strong>δ = a + bF</strong>
-            using the measured load-deflection data and complete the following tasks:
+            Students are asked to fit the empirical model <strong>δ = a + bF</strong> using the measured
+            load-deflection data and complete the tasks below.
           </p>
 
-          <ul class="checklist">
-            <li>Scatter plot</li>
-            <li>Manual normal-equation derivation</li>
-            <li>Matrix solution</li>
-            <li>polyfit/polyval fitting</li>
-            <li>User-defined function</li>
-            <li>SSE, RMSE, and R²</li>
-            <li>Residual plot</li>
-            <li>Prediction at 7 and 15 kN</li>
-            <li>95% confidence and prediction intervals</li>
-            <li>Engineering interpretation and limitation analysis</li>
-          </ul>
+          <div class="content-grid">
+            <div>
+              <h3>Problem statement</h3>
+              <p>
+                A test specimen is loaded in increments, and the corresponding deflection is measured. The
+                purpose is to determine the straight-line relationship between load and deflection and evaluate
+                the reliability of the fitted model.
+              </p>
+
+              <table class="data-table">
+                <thead>
+                  <tr><th>Load F (kN)</th><th>Deflection δ (mm)</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>2.1</td></tr>
+                  <tr><td>2</td><td>3.4</td></tr>
+                  <tr><td>3</td><td>5.0</td></tr>
+                  <tr><td>4</td><td>6.8</td></tr>
+                  <tr><td>5</td><td>8.2</td></tr>
+                  <tr><td>6</td><td>9.7</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div>
+              <h3>Tasks</h3>
+              <ul class="checklist">
+                <li>Draw a scatter plot of deflection versus load</li>
+                <li>Derive the normal equations for the linear model</li>
+                <li>Find the coefficients a and b using matrix solution</li>
+                <li>Check the result using <code>polyfit</code> and <code>polyval</code></li>
+                <li>Compute SSE, RMSE, and R²</li>
+                <li>Plot residuals and discuss their pattern</li>
+                <li>Estimate the predicted deflection at 7 and 15 kN</li>
+                <li>Compute 95% confidence intervals and prediction intervals</li>
+                <li>Interpret the engineering meaning of the fitted model</li>
+                <li>State the limitations of the linear assumption</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
     </main>
