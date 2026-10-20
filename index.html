@@ -8,6 +8,16 @@
       name="description"
       content="Matlab Computer Programming - Chapter 5: Linear Best Fitting and User-Defined Functions in MATLAB."
     />
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['\\(', '\\)'], ['$', '$']],
+          displayMath: [['\\[', '\\]'], ['$$', '$$']]
+        },
+        svg: { fontCache: 'global' }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -27,7 +37,7 @@
           <a href="#chapter">Chapter 5</a>
           <a href="#model">Model</a>
           <a href="#matlab">MATLAB</a>
-          <a href="#evaluation">Evaluation</a>
+          <a href="#intervals">Intervals</a>
           <a href="#assignment">Assignment</a>
         </nav>
       </div>
@@ -40,9 +50,8 @@
             <p class="eyebrow">Chapter 5</p>
             <h1>Linear Best Fitting and User-Defined Functions in MATLAB</h1>
             <p class="lead">
-              This chapter links engineering observations to least-squares regression,
-              MATLAB matrix operations, built-in fitting tools, reusable functions, and
-              model interpretation for engineering decision-making.
+              This chapter follows the consolidated manuscript for linear regression,
+              least-squares fitting, MATLAB implementation, and engineering interpretation.
             </p>
             <div class="chips" aria-label="Topic tags">
               <span>Least Squares</span>
@@ -52,16 +61,16 @@
             </div>
             <div class="cta-row">
               <a class="btn primary" href="#chapter">Read Chapter</a>
-              <a class="btn secondary" href="#matlab">See MATLAB Code</a>
+              <a class="btn secondary" href="#assignment">See Assignment</a>
             </div>
           </div>
 
-          <div class="chart-panel" aria-label="Sample fitted line panel">
+          <div class="chart-panel" aria-label="Rainfall runoff fitted line panel">
             <div class="chart-header">
-              <span>Sample Regression</span>
-              <span>R = 0.30 + 0.35P</span>
+              <span>Observed + fitted model</span>
+              <span>\(R = 0.30 + 0.35P\)</span>
             </div>
-            <svg viewBox="0 0 320 190" role="img" aria-label="Scatter plot of rainfall and runoff with fitted line">
+            <svg viewBox="0 0 320 190" role="img" aria-label="Scatter plot of rainfall and runoff data with fitted regression line">
               <g class="grid-lines">
                 <line x1="30" y1="160" x2="290" y2="160" />
                 <line x1="30" y1="130" x2="290" y2="130" />
@@ -74,7 +83,6 @@
                 <line x1="210" y1="160" x2="210" y2="30" />
                 <line x1="270" y1="160" x2="270" y2="30" />
               </g>
-              <path d="M 30 146 L 90 120 L 150 96 L 210 72 L 270 49" class="fit-line" />
               <g class="data-points">
                 <circle cx="30" cy="146" r="5" />
                 <circle cx="90" cy="120" r="5" />
@@ -82,6 +90,7 @@
                 <circle cx="210" cy="72" r="5" />
                 <circle cx="270" cy="49" r="5" />
               </g>
+              <path d="M 30 146 L 90 120 L 150 96 L 210 72 L 270 49" class="fit-line" />
             </svg>
           </div>
         </div>
@@ -90,298 +99,247 @@
       <section id="chapter" class="section">
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">Problem setup</p>
-            <h2>Rainfall and runoff data</h2>
+            <p class="eyebrow">Consolidated manuscript</p>
+            <h2>Section 5.1–5.11</h2>
           </div>
-
           <div class="content-grid">
             <div>
               <p>
-                Engineers often seek empirical relationships between observed variables.
-                In this chapter, five hypothetical rainfall events provide paired total
-                rainfall depths <strong>P</strong> and direct-runoff depths <strong>R</strong>.
-                These values are illustrative and are used to demonstrate regression and
-                MATLAB workflow.
+                This chapter preserves the original Word manuscript structure while remaining readable in a
+                web format. The section sequence is kept continuous so the reader moves from model formulation
+                to MATLAB implementation, evaluation, intervals, and the student assignment without repeated
+                introductory duplication.
               </p>
-
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Event</th>
-                      <th>Rainfall P (mm)</th>
-                      <th>Runoff R (mm)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td>1</td><td>10</td><td>4</td></tr>
-                    <tr><td>2</td><td>20</td><td>7</td></tr>
-                    <tr><td>3</td><td>30</td><td>11</td></tr>
-                    <tr><td>4</td><td>40</td><td>14</td></tr>
-                    <tr><td>5</td><td>50</td><td>18</td></tr>
-                  </tbody>
-                </table>
-              </div>
+              <p>
+                The rainfall–runoff example is retained, with the fitted regression equation
+                \(R = 0.30 + 0.35P\), and the observed measurements are displayed as unconnected scatter points.
+              </p>
             </div>
-
             <aside class="callout">
-              <h3>Learning outcomes</h3>
+              <h3>Chapter focus</h3>
               <ul>
-                <li>Organize engineering observations</li>
-                <li>Derive least-squares regression</li>
-                <li>Solve coefficients manually and in MATLAB</li>
-                <li>Create reusable functions</li>
-                <li>Assess residuals, RMSE, and R²</li>
-                <li>Interpret interpolation and extrapolation</li>
+                <li>Linear regression and normal equations</li>
+                <li>Least-squares fitting in MATLAB</li>
+                <li>Residuals, RMSE, and coefficient of determination</li>
+                <li>Confidence and prediction intervals</li>
+                <li>Student assignment and assessment</li>
               </ul>
             </aside>
           </div>
-
-          <pre class="code-block"><code>P = [10;20;30;40;50];
-R = [4;7;11;14;18];
-figure; scatter(P,R,70,"b","filled"); grid on;
-xlabel("Rainfall, P (mm)"); ylabel("Runoff depth, R (mm)");</code></pre>
         </div>
       </section>
 
       <section id="model" class="section alt">
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">Model</p>
-            <h2>Linear relationship and least-squares principle</h2>
+            <p class="eyebrow">5.1</p>
+            <h3>Linear regression model</h3>
           </div>
-
-          <div class="content-grid">
-            <div>
-              <p>
-                The model is expressed as <strong>R̂ = a + bP</strong>, where
-                <strong>a</strong> is the intercept and <strong>b</strong> is the slope.
-                Least-squares chooses the coefficients that minimize the total squared
-                error between observed and predicted data.
-              </p>
-              <div class="formula-card">
-                <p><strong>Residual:</strong> e = R - R̂</p>
-                <p><strong>Sum of squared errors:</strong> SSE = Σ(R - (a + bP))²</p>
-                <p><strong>Normal equations:</strong> n a + (ΣP)b = ΣR</p>
-                <p>ΣP a + (ΣP²)b = ΣPR</p>
-              </div>
-            </div>
-
-            <div class="note-box">
-              <h3>Key result</h3>
-              <p>
-                For this data set, the fitted equation is approximately
-                <strong>R = 0.30 + 0.35P</strong>.
-              </p>
-              <p>
-                This means that for each increase of 1 mm of rainfall, the model predicts
-                roughly 0.35 mm more runoff within the calibration range.
-              </p>
-            </div>
+          <p>
+            A simple linear regression model is written as \(y = a + bx\), where \(a\) is the intercept and \(b\)
+            is the slope of the best-fit line. This form is used when the relationship between two variables is
+            approximately linear.
+          </p>
+          <div class="formula-card">
+            <p>\(\hat{y} = a + bx\)</p>
+            <p>\(e = y - \hat{y}\)</p>
           </div>
         </div>
       </section>
 
-      <section id="matlab" class="section">
+      <section class="section">
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">MATLAB</p>
-            <h2>Regression implementation in MATLAB</h2>
+            <p class="eyebrow">5.2</p>
+            <h3>Data arrangement and plotting</h3>
           </div>
+          <p>
+            The first step is to organize the measured data in pairs of independent and dependent variables, then
+            plot them as a scatter diagram. The scatter plot helps confirm whether the relationship is linear
+            before conducting regression.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Rainfall \(P\) (mm)</th>
+                  <th>Runoff \(R\) (mm)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>10</td><td>4</td></tr>
+                <tr><td>2</td><td>20</td><td>7</td></tr>
+                <tr><td>3</td><td>30</td><td>11</td></tr>
+                <tr><td>4</td><td>40</td><td>14</td></tr>
+                <tr><td>5</td><td>50</td><td>18</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="formula-card">
+            <p>Regression model: \(\hat{R} = a + bP\)</p>
+            <p>Fitted equation: \(R = 0.30 + 0.35P\)</p>
+          </div>
+        </div>
+      </section>
 
-          <div class="code-grid">
-            <article class="code-card">
-              <h3>Manual normal equations</h3>
-              <pre class="code-block"><code>n = length(P);
+      <section class="section alt">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">5.3</p>
+            <h3>Least-squares method</h3>
+          </div>
+          <p>
+            The least-squares method determines the coefficients that minimize the sum of squared residuals. This
+            gives the best-fit line closest to all data points in the sense of minimum total squared error.
+          </p>
+          <div class="formula-card">
+            <p>\(e_i = y_i - \hat{y}_i\)</p>
+            <p>\(\mathrm{SSE} = \sum_{i=1}^{n}(y_i - (a + bx_i))^2\)</p>
+            <p>Minimize \(\sum (y - (a + bx))^2\)</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">5.4</p>
+            <h3>Normal equations</h3>
+          </div>
+          <p>
+            The coefficients are obtained from the normal equations. For the model \(y = a + bx\), the system is:
+          </p>
+          <div class="formula-card">
+            <p>\(na + (\sum x)b = \sum y\)</p>
+            <p>\((\sum x)a + (\sum x^2)b = \sum xy\)</p>
+          </div>
+          <pre class="code-block"><code>n = length(P);
 A = [n sum(P); sum(P) sum(P.^2)];
 d = [sum(R); sum(P.*R)];
-c = A\d; a = c(1); b = c(2);</code></pre>
-            </article>
-
-            <article class="code-card">
-              <h3>Direct least squares</h3>
-              <pre class="code-block"><code>X = [ones(length(P),1), P];
-c = X\R; a = c(1); b = c(2);</code></pre>
-            </article>
-
-            <article class="code-card wide">
-              <h3>Built-in fitting with polyfit</h3>
-              <pre class="code-block"><code>p = polyfit(P,R,1);
-b = p(1); a = p(2);
-R_pred = polyval(p,P);</code></pre>
-            </article>
-
-            <article class="code-card wide">
-              <h3>User-defined function</h3>
-              <pre class="code-block"><code>function [a,b,R_pred] = myLinearFit(P,R)
-    P = P(:); R = R(:);
-    if numel(P) ~= numel(R) || numel(P) < 2
-        error("Input vectors must have equal lengths >= 2.");
-    end
-    if any(~isfinite(P)) || any(~isfinite(R))
-        error("Inputs must contain finite numbers.");
-    end
-    X = [ones(numel(P),1), P];
-    c = X\R;
-    a = c(1); b = c(2);
-    R_pred = a + b*P;
-end</code></pre>
-            </article>
-          </div>
+c = A\d;
+a = c(1); b = c(2);</code></pre>
         </div>
       </section>
 
-      <section id="evaluation" class="section alt">
+      <section id="matlab" class="section alt">
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">Evaluation</p>
-            <h2>Residual analysis, RMSE and R²</h2>
+            <p class="eyebrow">5.5</p>
+            <h3>MATLAB implementation</h3>
           </div>
-
-          <div class="content-grid">
-            <div>
-              <p>
-                Model quality is judged by how far predictions deviate from the measured
-                values. Residuals tell the story of bias, spread, and explanatory power.
-              </p>
-              <div class="formula-card">
-                <p><strong>Residual:</strong> e = R - R_pred</p>
-                <p><strong>SSE:</strong> Σe²</p>
-                <p><strong>RMSE:</strong> sqrt(mean(e²))</p>
-                <p><strong>R²:</strong> 1 - SSE / SST</p>
-              </div>
-            </div>
-
-            <div class="note-box">
-              <h3>Interpretation</h3>
-              <p>
-                A high R² indicates a strong linear relationship, but it does not guarantee
-                physical validity or good extrapolation outside the observed range.
-              </p>
-              <pre class="code-block compact"><code>e = R - R_pred;
-SSE = sum(e.^2);
-RMSE = sqrt(mean(e.^2));
-SST = sum((R - mean(R)).^2);
-R2 = 1 - SSE/SST;</code></pre>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="chapter5" class="section">
-        <div class="container">
-          <div class="section-heading">
-            <p class="eyebrow">Chapter 5</p>
-            <h2>Linear best fitting and regression analysis</h2>
-          </div>
-
-          <div class="content-grid">
-            <div>
-              <h3>5.1 Linear regression model</h3>
-              <p>
-                A simple linear regression model is written as <strong>y = a + bx</strong>, where
-                <strong>a</strong> is the intercept and <strong>b</strong> is the slope of the best-fit line.
-                This form is used when the relationship between two variables is approximately linear.
-              </p>
-
-              <h3>5.2 Data arrangement and plotting</h3>
-              <p>
-                The first step is to organize the measured data in pairs of independent and dependent
-                variables, then plot them as a scatter diagram. The scatter plot helps confirm whether
-                the relation is linear before conducting regression.
-              </p>
-
-              <h3>5.3 Least-squares method</h3>
-              <p>
-                The least-squares method determines the coefficients that minimize the sum of squared
-                residuals. This gives the best-fit line closest to all data points in the sense of
-                minimum total squared error.
-              </p>
-              <div class="formula-card">
-                <p><strong>Residual:</strong> e = y - ŷ</p>
-                <p><strong>Least-squares objective:</strong> minimize Σ(y - (a + bx))²</p>
-              </div>
-
-              <h3>5.4 Normal equations</h3>
-              <p>
-                The coefficients are obtained from the normal equations. For the model y = a + bx,
-                the system is:
-              </p>
-              <div class="formula-card">
-                <p><strong>na + (Σx)b = Σy</strong></p>
-                <p><strong>(Σx)a + (Σx²)b = Σxy</strong></p>
-              </div>
-
-              <h3>5.5 MATLAB implementation</h3>
-              <pre class="code-block"><code>x = [10 20 30 40 50];
+          <pre class="code-block"><code>x = [10 20 30 40 50];
 y = [4 7 11 14 18];
 X = [ones(length(x),1), x];
 c = X\y;
 a = c(1); b = c(2);
 yhat = a + b*x;
-plot(x,y,'o',x,yhat,'-'); grid on;</code></pre>
+scatter(x,y,80,'filled'); hold on;
+plot(x,yhat,'-r','LineWidth',2); grid on;</code></pre>
+          <p>
+            This keeps the observed values as unconnected scatter points and the fitted line as a separate plotted
+            regression curve, which is the clearest way to visualize the model fit.
+          </p>
+        </div>
+      </section>
 
-              <h3>5.6 Model quality measures</h3>
-              <p>
-                Several measures are used to evaluate the fit: residuals, standard error, RMSE, and
-                coefficient of determination R². These indicators show whether the model explains the
-                observed variation well and whether the residuals are small and randomly distributed.
-              </p>
-              <pre class="code-block compact"><code>e = y - yhat;
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">5.6</p>
+            <h3>Model quality measures</h3>
+          </div>
+          <p>
+            Several measures are used to evaluate the fit: residuals, standard error, RMSE, and the coefficient of
+            determination \(R^2\). These indicators show whether the model explains the observed variation well and
+            whether the residuals are small and randomly distributed.
+          </p>
+          <div class="formula-card">
+            <p>\(e = y - \hat{y}\)</p>
+            <p>\(\mathrm{SSE} = \sum e^2\)</p>
+            <p>\(\mathrm{RMSE} = \sqrt{\frac{1}{n}\sum e^2}\)</p>
+            <p>\(R^2 = 1 - \frac{\mathrm{SSE}}{\mathrm{SST}}\)</p>
+          </div>
+          <pre class="code-block compact"><code>e = y - yhat;
 SSE = sum(e.^2);
 RMSE = sqrt(mean(e.^2));
 SST = sum((y - mean(y)).^2);
 R2 = 1 - SSE/SST;</code></pre>
+        </div>
+      </section>
 
-              <h3>5.7 Interpolation and extrapolation</h3>
-              <p>
-                Interpolation uses the fitted model within the observed x-range. Extrapolation extends the
-                relationship beyond the available data and is riskier because the model may not remain valid.
-                It is important to check whether the engineering relationship remains physically reasonable.
-              </p>
+      <section class="section alt">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">5.7</p>
+            <h3>Interpolation and extrapolation</h3>
+          </div>
+          <p>
+            Interpolation uses the fitted model within the observed \(x\)-range. Extrapolation extends the relationship
+            beyond the available data and is riskier because the model may not remain valid. It is important to check
+            whether the engineering relationship remains physically reasonable.
+          </p>
+        </div>
+      </section>
 
-              <h3>5.8 Interpretation of slope and intercept</h3>
-              <p>
-                The slope <strong>b</strong> gives the average change in the response for each unit increase in
-                the predictor, while the intercept <strong>a</strong> is the estimated response when x = 0.
-                In engineering applications, these values must be interpreted in relation to the actual problem,
-                not only as algebraic coefficients.
-              </p>
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">5.8</p>
+            <h3>Interpretation of slope and intercept</h3>
+          </div>
+          <p>
+            The slope \(b\) gives the average change in the response for each unit increase in the predictor, while the
+            intercept \(a\) is the estimated response when \(x = 0\). In engineering applications, these values must be
+            interpreted in relation to the actual problem, not only as algebraic coefficients.
+          </p>
+        </div>
+      </section>
 
-              <h3>5.9 Limitations of regression</h3>
-              <p>
-                A linear model is only valid if the relation is approximately linear and the residuals do not
-                show a strong systematic pattern. If the data are nonlinear, contain outliers, or are influenced
-                by measurement errors, then a simple straight-line fit may be misleading.
-              </p>
-            </div>
+      <section class="section alt">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">5.9</p>
+            <h3>Limitations of regression</h3>
+          </div>
+          <p>
+            A linear model is only valid if the relationship is approximately linear and the residuals do not show a
+            strong systematic pattern. If the data are nonlinear, contain outliers, or are influenced by measurement
+            errors, then a simple straight-line fit may be misleading.
+          </p>
+        </div>
+      </section>
 
-            <div class="note-box">
-              <h3>5.10 Confidence and prediction intervals</h3>
-              <p>
-                After fitting the regression line, engineers should quantify the uncertainty of the estimate. Two
-                common procedures are confidence intervals and prediction intervals.
-              </p>
-              <ul class="checklist">
-                <li><strong>Confidence interval</strong> for the mean response at a given x-value</li>
-                <li><strong>Prediction interval</strong> for an individual future observation at a given x-value</li>
-              </ul>
-              <div class="formula-card">
-                <p><strong>Predicted value:</strong> ŷ₀ = a + bx₀</p>
-                <p><strong>Confidence interval:</strong> ŷ₀ ± t<sub>α/2, n-2</sub> s√(1/n + (x₀ - x̄)²/Sₓₓ)</p>
-                <p><strong>Prediction interval:</strong> ŷ₀ ± t<sub>α/2, n-2</sub> s√(1 + 1/n + (x₀ - x̄)²/Sₓₓ)</p>
-              </div>
-              <p>
-                These intervals assume an appropriate linear model with independent, normally distributed errors
-                and constant error variance. Five observations are insufficient to assess these assumptions
-                confidently. A 95% confidence procedure has 95% long-run coverage; it does not assign 95%
-                probability to a fixed parameter after the data have been observed.
-              </p>
-              <p>
-                In practice, the prediction interval is wider than the confidence interval because it includes both
-                parameter uncertainty and the random variability of individual observations.
-              </p>
-              <pre class="code-block compact"><code>x0 = 35;
+      <section id="intervals" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">5.10</p>
+            <h3>Confidence and prediction intervals</h3>
+          </div>
+          <p>
+            After fitting the regression line, engineers should quantify the uncertainty of the estimate. Two common
+            procedures are confidence intervals and prediction intervals.
+          </p>
+          <ul class="checklist">
+            <li><strong>Confidence interval</strong> for the mean response at a given \(x\)-value</li>
+            <li><strong>Prediction interval</strong> for an individual future observation at a given \(x\)-value</li>
+          </ul>
+          <div class="formula-card">
+            <p>\(\hat{y}_0 = a + bx_0\)</p>
+            <p>\(\hat{y}_0 \pm t_{\alpha/2, n-2} s \sqrt{\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{S_{xx}}}\)</p>
+            <p>\(\hat{y}_0 \pm t_{\alpha/2, n-2} s \sqrt{1 + \frac{1}{n} + \frac{(x_0 - \bar{x})^2}{S_{xx}}}\)</p>
+          </div>
+          <p>
+            These intervals assume an appropriate linear model with independent, normally distributed errors and constant
+            error variance. Five observations are insufficient to assess these assumptions confidently. A 95% confidence
+            procedure has 95% long-run coverage; it does not assign 95% probability to a fixed parameter after the data
+            have been observed.
+          </p>
+          <p>
+            The prediction interval is always wider than the confidence interval because it accounts for both parameter
+            uncertainty and the random variability of individual observations.
+          </p>
+          <pre class="code-block compact"><code>x0 = 35;
 Sxx = sum((x - mean(x)).^2);
 s = sqrt(SSE/(length(x)-2));
 yp = a + b*x0;
@@ -393,29 +351,25 @@ PI = [yp - tcrit*SE_pred, yp + tcrit*SE_pred];
 figure; plot(x,y,'o'); hold on; plot(x,yp,'r-');
 plot([x0 x0],[CI(1) CI(2)],'k--');
 plot([x0 x0],[PI(1) PI(2)],'b--'); grid on;</code></pre>
-            </div>
-          </div>
         </div>
       </section>
 
-      <section id="assignment" class="section alt">
+      <section class="section alt" id="assignment">
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">Assessment</p>
-            <h2>5.11 Student assignment: load and deflection</h2>
+            <p class="eyebrow">5.11</p>
+            <h3>Student assignment: load and deflection</h3>
           </div>
-
           <p>
             A structural engineer measures the following hypothetical applied loads and vertical deflections. Fit the
-            empirical model <strong>δ = a + bF</strong> within the measured range.
+            empirical model \(\delta = a + bF\) within the measured range.
           </p>
-
           <div class="content-grid">
             <div>
               <h3>Data</h3>
               <table class="data-table">
                 <thead>
-                  <tr><th>Observation</th><th>Load F (kN)</th><th>Deflection δ (mm)</th></tr>
+                  <tr><th>Observation</th><th>Load \(F\) (kN)</th><th>Deflection \(\delta\) (mm)</th></tr>
                 </thead>
                 <tbody>
                   <tr><td>1</td><td>2</td><td>0.8</td></tr>
@@ -427,7 +381,6 @@ plot([x0 x0],[PI(1) PI(2)],'b--'); grid on;</code></pre>
                 </tbody>
               </table>
             </div>
-
             <div>
               <h3>Required tasks</h3>
               <ol class="checklist ordered">
@@ -436,7 +389,7 @@ plot([x0 x0],[PI(1) PI(2)],'b--'); grid on;</code></pre>
                 <li>Matrix solution</li>
                 <li>polyfit/polyval</li>
                 <li>myLinearFit function</li>
-                <li>SSE, RMSE and R²</li>
+                <li>SSE, RMSE and \(R^2\)</li>
                 <li>Residual plot</li>
                 <li>Predict at 7 and 15 kN and identify interpolation/extrapolation</li>
                 <li>95% confidence and prediction intervals</li>
@@ -444,7 +397,6 @@ plot([x0 x0],[PI(1) PI(2)],'b--'); grid on;</code></pre>
               </ol>
             </div>
           </div>
-
           <h3>Assessment component</h3>
           <table class="data-table">
             <thead>
@@ -460,6 +412,24 @@ plot([x0 x0],[PI(1) PI(2)],'b--'); grid on;</code></pre>
               <tr><td>Engineering interpretation</td><td>10%</td></tr>
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Summary</p>
+            <h3>Chapter Summary</h3>
+          </div>
+          <p>
+            The chapter connects engineering observations to mathematical models, least-squares derivation, MATLAB
+            matrix computation, built-in fitting, reusable functions, error assessment, uncertainty intervals, and
+            engineering interpretation. Students should distinguish numerical agreement from physical validity and avoid
+            uncritical reliance on a straight-line fit beyond the range of the measured data.
+          </p>
+          <p>
+            Key MATLAB commands: scatter, plot, sum, mean, \, polyfit, polyval, function, sqrt, rmse, fitlm, predict.
+          </p>
         </div>
       </section>
     </main>
